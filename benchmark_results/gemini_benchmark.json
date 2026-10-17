@@ -1,0 +1,286 @@
+{
+  "provider": "gemini",
+  "model": "gemini-3.8-flash",
+  "base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
+  "temperature": 0,
+  "prompt": "identical NETWORK_PROMPT from diagnostics.py",
+  "tolerance": 0.001,
+  "rows": [
+    {
+      "case": 1,
+      "repeat": false,
+      "input": [
+        "NA",
+        "NA",
+        "NA",
+        "NA"
+      ],
+      "reference": [
+        "Bronchitis",
+        0.45000000000000007
+      ],
+      "seconds": 3.235976780008059,
+      "actual": [
+        "Bronchitis",
+        0.45
+      ],
+      "usage": {
+        "completion_tokens": 17,
+        "prompt_tokens": 638,
+        "total_tokens": 1097
+      },
+      "disease_matches": true,
+      "absolute_error": 5.551115123125783e-17,
+      "passed": true
+    },
+    {
+      "case": 2,
+      "repeat": false,
+      "input": [
+        "Yes",
+        "NA",
+        "NA",
+        "NA"
+      ],
+      "reference": [
+        "Bronchitis",
+        0.44999999999999996
+      ],
+      "seconds": 5.614568190998398,
+      "actual": [
+        "Bronchitis",
+        0.45
+      ],
+      "usage": {
+        "completion_tokens": 17,
+        "prompt_tokens": 642,
+        "total_tokens": 1429
+      },
+      "disease_matches": true,
+      "absolute_error": 5.551115123125783e-17,
+      "passed": true
+    },
+    {
+      "case": 3,
+      "repeat": false,
+      "input": [
+        "No",
+        "NA",
+        "NA",
+        "NA"
+      ],
+      "reference": [
+        "Bronchitis",
+        0.45000000000000007
+      ],
+      "seconds": 4.483473995001987,
+      "actual": [
+        "Bronchitis",
+        0.45
+      ],
+      "usage": {
+        "completion_tokens": 17,
+        "prompt_tokens": 642,
+        "total_tokens": 1143
+      },
+      "disease_matches": true,
+      "absolute_error": 5.551115123125783e-17,
+      "passed": true
+    },
+    {
+      "case": 4,
+      "repeat": false,
+      "input": [
+        "Yes",
+        "No",
+        "NA",
+        "NA"
+      ],
+      "reference": [
+        "Bronchitis",
+        0.30000000000000004
+      ],
+      "seconds": 4.629174139990937,
+      "actual": [
+        "Bronchitis",
+        0.3
+      ],
+      "usage": {
+        "completion_tokens": 16,
+        "prompt_tokens": 647,
+        "total_tokens": 1184
+      },
+      "disease_matches": true,
+      "absolute_error": 5.551115123125783e-17,
+      "passed": true
+    },
+    {
+      "case": 5,
+      "repeat": false,
+      "input": [
+        "Yes",
+        "No",
+        "Abnormal",
+        "NA"
+      ],
+      "reference": [
+        "TB",
+        0.4672897196261682
+      ],
+      "seconds": 13.973679761984386,
+      "actual": [
+        "TB",
+        0.462617
+      ],
+      "usage": {
+        "completion_tokens": 19,
+        "prompt_tokens": 653,
+        "total_tokens": 2217
+      },
+      "disease_matches": true,
+      "absolute_error": 0.00467271962616822,
+      "passed": false
+    },
+    {
+      "case": 6,
+      "repeat": false,
+      "input": [
+        "Yes",
+        "No",
+        "Abnormal",
+        "Present"
+      ],
+      "reference": [
+        "TB",
+        0.6339144215530903
+      ],
+      "seconds": 13.541112880018773,
+      "actual": [
+        "TB",
+        0.633914
+      ],
+      "usage": {
+        "completion_tokens": 19,
+        "prompt_tokens": 660,
+        "total_tokens": 3058
+      },
+      "disease_matches": true,
+      "absolute_error": 4.2155309032398947e-07,
+      "passed": true
+    },
+    {
+      "case": 7,
+      "repeat": false,
+      "input": [
+        "No",
+        "Yes",
+        "Abnormal",
+        "Present"
+      ],
+      "reference": [
+        "Cancer",
+        0.7270792693740025
+      ],
+      "seconds": 16.444134877005126,
+      "actual": [
+        "Cancer",
+        0.727079
+      ],
+      "usage": {
+        "completion_tokens": 19,
+        "prompt_tokens": 660,
+        "total_tokens": 3512
+      },
+      "disease_matches": true,
+      "absolute_error": 2.69374002437317e-07,
+      "passed": true
+    },
+    {
+      "case": 8,
+      "repeat": false,
+      "input": [
+        "No",
+        "Yes",
+        "Abnormal",
+        "Absent"
+      ],
+      "reference": [
+        "Cancer",
+        0.43668122270742354
+      ],
+      "seconds": 20.65875096898526,
+      "actual": [
+        "Cancer",
+        0.436681
+      ],
+      "usage": {
+        "completion_tokens": 19,
+        "prompt_tokens": 660,
+        "total_tokens": 4134
+      },
+      "disease_matches": true,
+      "absolute_error": 2.2270742355834372e-07,
+      "passed": true
+    },
+    {
+      "case": 8,
+      "repeat": true,
+      "input": [
+        "No",
+        "Yes",
+        "Abnormal",
+        "Absent"
+      ],
+      "reference": [
+        "Cancer",
+        0.43668122270742354
+      ],
+      "seconds": 179.0177843949932,
+      "actual": [
+        "Cancer",
+        0.436681
+      ],
+      "usage": {
+        "completion_tokens": 19,
+        "prompt_tokens": 660,
+        "total_tokens": 3922
+      },
+      "disease_matches": true,
+      "absolute_error": 2.2270742355834372e-07,
+      "passed": true
+    },
+    {
+      "case": 8,
+      "repeat": true,
+      "input": [
+        "No",
+        "Yes",
+        "Abnormal",
+        "Absent"
+      ],
+      "reference": [
+        "Cancer",
+        0.43668122270742354
+      ],
+      "seconds": 17.48245332299848,
+      "actual": [
+        "Cancer",
+        0.436681
+      ],
+      "usage": {
+        "completion_tokens": 19,
+        "prompt_tokens": 660,
+        "total_tokens": 3950
+      },
+      "disease_matches": true,
+      "absolute_error": 2.2270742355834372e-07,
+      "passed": true
+    }
+  ],
+  "test_date": "2026-10-16",
+  "notes": [
+    "Same NETWORK_PROMPT and requested temperature=0; Google documents that Gemini 3.6+ ignores custom temperature, so effective sampling was not matched.",
+    "Each provider tested sequentially, without automatic retries; providers not tested in randomized order.",
+    "Absolute probability tolerance 0.001 is a development threshold, not a published Gradescope tolerance."
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "provider": "nrp",
+  "model": "gpt-oss",
+  "base_url": "https://ellm.nrp-nautilus.io/v1",
+  "temperature": 0,
+  "prompt": "identical NETWORK_PROMPT from diagnostics.py",
+  "tolerance": 0.001,
+  "rows": [
+    {
+      "case": 1,
+      "repeat": false,
+      "input": [
+        "NA",
+        "NA",
+        "NA",
+        "NA"
+      ],
+      "reference": [
+        "Bronchitis",
+        0.45000000000000007
+      ],
+      "seconds": 10.032676104980055,
+      "actual": [
+        "Bronchitis",
+        0.45
+      ],
+      "usage": {
+        "prompt_tokens": 636,
+        "total_tokens": 966,
+        "completion_tokens": 330,
+        "prompt_tokens_details": null,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "disease_matches": true,
+      "absolute_error": 5.551115123125783e-17,
+      "passed": true
+    },
+    {
+      "case": 2,
+      "repeat": false,
+      "input": [
+        "Yes",
+        "NA",
+        "NA",
+        "NA"
+      ],
+      "reference": [
+        "Bronchitis",
+        0.44999999999999996
+      ],
+      "seconds": 16.45581335600582,
+      "actual": [
+        "Bronchitis",
+        0.45
+      ],
+      "usage": {
+        "prompt_tokens": 640,
+        "total_tokens": 1180,
+        "completion_tokens": 540,
+        "prompt_tokens_details": null,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "disease_matches": true,
+      "absolute_error": 5.551115123125783e-17,
+      "passed": true
+    },
+    {
+      "case": 3,
+      "repeat": false,
+      "input": [
+        "No",
+        "NA",
+        "NA",
+        "NA"
+      ],
+      "reference": [
+        "Bronchitis",
+        0.45000000000000007
+      ],
+      "seconds": 18.461240666016238,
+      "actual": [
+        "Bronchitis",
+        0.45
+      ],
+      "usage": {
+        "prompt_tokens": 640,
+        "total_tokens": 1205,
+        "completion_tokens": 565,
+        "prompt_tokens_details": null,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "disease_matches": true,
+      "absolute_error": 5.551115123125783e-17,
+      "passed": true
+    },
+    {
+      "case": 4,
+      "repeat": false,
+      "input": [
+        "Yes",
+        "No",
+        "NA",
+        "NA"
+      ],
+      "reference": [
+        "Bronchitis",
+        0.30000000000000004
+      ],
+      "seconds": 14.617964314995334,
+      "actual": [
+        "Bronchitis",
+        0.3
+      ],
+      "usage": {
+        "prompt_tokens": 645,
+        "total_tokens": 1142,
+        "completion_tokens": 497,
+        "prompt_tokens_details": null,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "disease_matches": true,
+      "absolute_error": 5.551115123125783e-17,
+      "passed": true
+    },
+    {
+      "case": 5,
+      "repeat": false,
+      "input": [
+        "Yes",
+        "No",
+        "Abnormal",
+        "NA"
+      ],
+      "reference": [
+        "TB",
+        0.4672897196261682
+      ],
+      "seconds": 138.63606930099195,
+      "actual": [
+        "TB",
+        0.46729
+      ],
+      "usage": {
+        "prompt_tokens": 651,
+        "total_tokens": 5338,
+        "completion_tokens": 4687,
+        "prompt_tokens_details": null,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "disease_matches": true,
+      "absolute_error": 2.8037383176249264e-07,
+      "passed": true
+    },
+    {
+      "case": 6,
+      "repeat": false,
+      "input": [
+        "Yes",
+        "No",
+        "Abnormal",
+        "Present"
+      ],
+      "reference": [
+        "TB",
+        0.6339144215530903
+      ],
+      "seconds": 180.07787782899686,
+      "error": "The read operation timed out"
+    },
+    {
+      "case": 7,
+      "repeat": false,
+      "input": [
+        "No",
+        "Yes",
+        "Abnormal",
+        "Present"
+      ],
+      "reference": [
+        "Cancer",
+        0.7270792693740025
+      ],
+      "seconds": 180.1598919859971,
+      "error": "The read operation timed out"
+    },
+    {
+      "case": 8,
+      "repeat": false,
+      "input": [
+        "No",
+        "Yes",
+        "Abnormal",
+        "Absent"
+      ],
+      "reference": [
+        "Cancer",
+        0.43668122270742354
+      ],
+      "seconds": 180.1240877189848,
+      "error": "The read operation timed out"
+    }
+  ],
+  "test_date": "2026-10-16",
+  "notes": [
+    "Same NETWORK_PROMPT and requested temperature=0; Google documents that Gemini 3.6+ ignores custom temperature, so effective sampling was not matched.",
+    "Each provider tested sequentially, without automatic retries; providers not tested in randomized order.",
+    "Absolute probability tolerance 0.001 is a development threshold, not a published Gradescope tolerance.",
+    "Cases 6-8 each reached the 180-second timeout. Run resumed after case 6 without retrying it. Optional repetition requests were stopped after all eight required cases were recorded; no NRP repeatability conclusion is available."
+  ]
+}

@@ -1,0 +1,63 @@
+[
+  {
+    "provider": "gemini",
+    "model": "gemini-3.8-flash",
+    "requested": 8,
+    "returned": 8,
+    "disease_matches": 8,
+    "probability_passes": 7,
+    "mean_seconds_including_timeouts": 10.322608949249116,
+    "median_seconds_including_timeouts": 9.577840535508585,
+    "mean_successful_seconds": 10.322608949249116,
+    "mean_absolute_error_successful": 0.0005842041575855952,
+    "max_absolute_error_successful": 0.00467271962616822,
+    "reported_total_tokens_successful": 17774,
+    "repeated_case8_results": [
+      {
+        "actual": [
+          "Cancer",
+          0.436681
+        ],
+        "error": null,
+        "seconds": 20.65875096898526
+      },
+      {
+        "actual": [
+          "Cancer",
+          0.436681
+        ],
+        "error": null,
+        "seconds": 179.0177843949932
+      },
+      {
+        "actual": [
+          "Cancer",
+          0.436681
+        ],
+        "error": null,
+        "seconds": 17.48245332299848
+      }
+    ]
+  },
+  {
+    "provider": "nrp",
+    "model": "gpt-oss",
+    "requested": 8,
+    "returned": 5,
+    "disease_matches": 5,
+    "probability_passes": 5,
+    "mean_seconds_including_timeouts": 92.32070265962102,
+    "median_seconds_including_timeouts": 78.5486549835041,
+    "mean_successful_seconds": 39.640752748597876,
+    "mean_absolute_error_successful": 5.607476639690745e-08,
+    "max_absolute_error_successful": 2.8037383176249264e-07,
+    "reported_total_tokens_successful": 9831,
+    "repeated_case8_results": [
+      {
+        "actual": null,
+        "error": "The read operation timed out",
+        "seconds": 180.1240877189848
+      }
+    ]
+  }
+]
