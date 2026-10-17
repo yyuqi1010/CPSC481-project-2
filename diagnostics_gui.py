@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from diagnostics import Diagnostics
 
 # Create the main application window
@@ -12,7 +12,11 @@ bn = Diagnostics()
 
 # Function to handle dropdown selection
 def on_selection():
-    disease, p_disease =bn.diagnose(asia_var.get(), smoking_var.get(), xray_var.get(), dyspnea_var.get())
+    try:
+        disease, p_disease = bn.diagnose(asia_var.get(), smoking_var.get(), xray_var.get(), dyspnea_var.get())
+    except (RuntimeError, ValueError) as error:
+        messagebox.showerror("Diagnosis failed", str(error))
+        return
     diagnosis = f"{disease} with chance {p_disease*100:.2f}%"
     textbox.delete("1.0", tk.END)
     textbox.insert(tk.END, diagnosis)

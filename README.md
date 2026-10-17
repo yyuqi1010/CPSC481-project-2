@@ -1,42 +1,49 @@
-# CPSC 481 Project 1: Bayesian Network Diagnostics
+# CPSC 481 Project 2: LLM Diagnostics
 
-Diagnose TB, Cancer, or Bronchitis from any combination of symptoms using the
-Asia Bayesian network, built with AIMA's `BayesNet` and queried with
-`enumeration_ask` (see `aima/probability.py`). The deliverable is the `Diagnostics`
-class in `diagnostics.py`.
-
-The AIMA files live in `aima/` because they import each other as `aima.*`,
-and the Canvas skeleton imports `aima.probability`.
-
-## Setup
-
-```
-pip install numpy ipython
-```
+`Diagnostics.diagnose()` sends the complete Asia Bayesian network and observed
+evidence to NRP's `gpt-oss` model. It returns `[disease, probability]` and does
+not call AIMA or compute posteriors locally. The implementation uses only the
+Python standard library. `NA` means unobserved.
 
 ## Run
 
+```bash
+cd /home/yyuqi1010/Desktop/Courses/Codes/CPSC481-project-2
+python3 diagnostics.py
 ```
-python -m unittest -v        # tests
-python diagnostics_gui.py    # GUI
+
+Paste the instructor's NRP key at the hidden prompt. This runs the known case
+`No, Yes, Abnormal, Absent`; the Project 1 reference is Cancer, about 0.4367.
+LLM arithmetic is not guaranteed: compare additional cases against Project 1.
+
+For the original GUI, export the key in the same terminal first:
+
+```bash
+read -rsp 'NRP API key: ' NRP_API_KEY
+echo
+export NRP_API_KEY
+python3 diagnostics_gui.py
 ```
 
-## Ownership
+The GUI requires Tkinter (Ubuntu package `python3-tk`). Network requests can take
+a while. Errors are shown by the GUI; retry after correcting configuration or
+waiting for the service to recover.
 
-| Person | Disease    | Nodes              | Input conversion           |
-|--------|------------|--------------------|----------------------------|
-| 1      | TB         | Asia, TB, TBorC    | `visit_to_asia`            |
-| 2      | Cancer     | Smoking, Cancer, Xray | `smoking`, `xray_result` |
-| 3      | Bronchitis | Bronchitis, Dyspnea | `dyspnea`                  |
+Optional environment variables: `NRP_MODEL` (default `gpt-oss`) and
+`NRP_BASE_URL` (default `https://ellm.nrp-nautilus.io/v1`).
+Never put the key into source control or the submitted file.
 
-`diagnose()` itself (evidence dict, `enumeration_ask`, picking the max) is shared,
-so do it together once the CPTs and conversions are in.
+## Verify locally
 
-## Workflow
+```bash
+python3 -m unittest -v
+```
 
-1. Branch off `main`: `tb`, `cancer`, or `bronchitis`.
-2. Edit only the lines marked with your name (`# OWNER: Person N` / `TODO (Person N)`)
-   in `diagnostics.py`, and your section of `test_diagnostics.py`.
-3. Open a PR to `main`.
+These offline tests mock the HTTP response to check integration and validation;
+they do not verify the model's arithmetic or whether a key is active.
 
-**Rule:** don't rename nodes or reorder the node list in `Diagnostics.__init__`.
+## Submit
+
+Upload `diagnostics.py`, a real execution screenshot (PNG/JPG), and a short PDF
+report together to Gradescope. The report explains model choice, main challenge,
+and a surprising thing learned. Include every group member.

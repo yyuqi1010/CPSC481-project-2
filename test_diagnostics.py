@@ -1,102 +1,61 @@
+"""Offline API integration tests: no real key or network required."""
+import io
+import json
+import os
 import unittest
+from unittest.mock import patch
+from urllib.error import HTTPError
 
-from aima.probability import F, T
-from diagnostics import Diagnostics, _convert_asia
-
-
-class TestNetworkBuilds(unittest.TestCase):
-    """Sanity check that the network can be constructed at all."""
-
-    def test_constructs_without_error(self):
-        Diagnostics()
+from diagnostics import Diagnostics, _parse_result
 
 
-class TestKnownCase(unittest.TestCase):
-    """The scenario from the project spec with a known answer.
+class TestDiagnostics(unittest.TestCase):
+    @patch.dict(os.environ, {"NRP_API_KEY": "test-key"})
+    @patch("diagnostics.urlopen")
+    def test_request_and_result(self, urlopen):
+        response = {"choices": [{"message": {"content":
+            '{"disease":"Cancer","probability":0.4367}'}}]}
+        urlopen.return_value.__enter__.return_value = io.StringIO(json.dumps(response))
+        answer = Diagnostics().diagnose("No", "Yes", "Abnormal", "Absent")
+        self.assertEqual(answer, ["Cancer", 0.4367])
+        request = urlopen.call_args.args[0]
+        payload = json.loads(request.data)
+        evidence = payload["messages"][1]["content"]
+        self.assertIn('"Asia": false', evidence)
+        self.assertIn('"Dyspnea": false', evidence)
+        self.assertIn("P(TB=True|Asia=True)=0.05", payload["messages"][0]["content"])
 
-    Expected to FAIL until every owner has filled in their real
-    probabilities (diagnose() currently raises NotImplementedError).
-    """
+    @patch.dict(os.environ, {"NRP_API_KEY": "test-key"})
+    @patch("diagnostics.urlopen")
+    def test_unknowns_omitted(self, urlopen):
+        response = {"choices": [{"message": {"content":
+            '{"disease":"Bronchitis","probability":0.45}'}}]}
+        urlopen.return_value.__enter__.return_value = io.StringIO(json.dumps(response))
+        Diagnostics().diagnose("NA", "NA", "NA", "NA")
+        payload = json.loads(urlopen.call_args.args[0].data)
+        self.assertEqual(payload["messages"][1]["content"], "Observed evidence: {}")
 
-    def test_known_case_returns_cancer(self):
-        d = Diagnostics()
-        disease, probability = d.diagnose("No", "Yes", "Abnormal", "Absent")
-        self.assertEqual(disease, "Cancer")
-        self.assertAlmostEqual(probability, 0.4367, places=4)
-
-
-# ---------------------------------------------------------------------------
-# Person 1 (TB): Asia, TB, TBorC
-# ---------------------------------------------------------------------------
-class TestPerson1TB(unittest.TestCase):
-
-    def test_asia_input_conversion(self):
-        self.assertIs(_convert_asia("Yes"), T)
-        self.assertIs(_convert_asia("No"), F)
-        self.assertIsNone(_convert_asia("NA"))
+    def test_invalid_input(self):
         with self.assertRaises(ValueError):
-            _convert_asia("Sometimes")
+            Diagnostics().diagnose("Sometimes", "NA", "NA", "NA")
 
-    def test_tb_nodes_match_network_diagram(self):
-        d = Diagnostics()
-        asia = d.net.variable_node("Asia")
-        tb = d.net.variable_node("TB")
-        tb_or_cancer = d.net.variable_node("TBorC")
+    @patch.dict(os.environ, {"NRP_API_KEY": ""})
+    def test_missing_key(self):
+        with self.assertRaisesRegex(RuntimeError, "NRP_API_KEY"):
+            Diagnostics().diagnose("NA", "NA", "NA", "NA")
 
-        self.assertEqual(asia.p(T, {}), 0.01)
-        self.assertEqual(tb.p(T, {"Asia": T}), 0.05)
-        self.assertEqual(tb.p(T, {"Asia": F}), 0.01)
-        self.assertEqual(tb_or_cancer.p(T, {"TB": T, "Cancer": T}), 1.0)
-        self.assertEqual(tb_or_cancer.p(T, {"TB": T, "Cancer": F}), 1.0)
-        self.assertEqual(tb_or_cancer.p(T, {"TB": F, "Cancer": T}), 1.0)
-        self.assertEqual(tb_or_cancer.p(T, {"TB": F, "Cancer": F}), 0.0)
+    def test_invalid_model_outputs(self):
+        for disease, probability in [("Flu", .5), ("TB", True),
+                                     ("TB", "0.5"), ("TB", 1.1), ("TB", float('nan'))]:
+            with self.subTest(disease=disease, probability=probability):
+                with self.assertRaises(ValueError):
+                    _parse_result(json.dumps(dict(disease=disease, probability=probability)))
 
-
-# ---------------------------------------------------------------------------
-# Person 2 (Cancer): Smoking, Cancer, Xray
-# ---------------------------------------------------------------------------
-class TestPerson2Cancer(unittest.TestCase):
-
-    def test_smoking_input_conversion(self):
-        from diagnostics import _convert_smoking
-
-        self.assertIs(_convert_smoking("Yes"), True)
-        self.assertIs(_convert_smoking("No"), False)
-        self.assertIsNone(_convert_smoking("NA"))
-        with self.assertRaises(ValueError):
-            _convert_smoking("Sometimes")
-
-    def test_xray_input_conversion(self):
-        from diagnostics import _convert_xray
-
-        self.assertIs(_convert_xray("Abnormal"), True)
-        self.assertIs(_convert_xray("Normal"), False)
-        self.assertIsNone(_convert_xray("NA"))
-        with self.assertRaises(ValueError):
-            _convert_xray("Blurry")
-
-    def test_cancer_nodes_match_network_diagram(self):
-        d = Diagnostics()
-        smoking = d.net.variable_node("Smoking")
-        cancer = d.net.variable_node("Cancer")
-        xray = d.net.variable_node("Xray")
-
-        self.assertEqual(smoking.p(True, {}), 0.5)
-        self.assertEqual(cancer.p(True, {"Smoking": True}), 0.1)
-        self.assertEqual(cancer.p(True, {"Smoking": False}), 0.01)
-        self.assertEqual(xray.p(True, {"TBorC": True}), 0.99)
-        self.assertEqual(xray.p(True, {"TBorC": False}), 0.05)
-
-
-# ---------------------------------------------------------------------------
-# Person 3 (Bronchitis): Bronchitis, Dyspnea
-# ---------------------------------------------------------------------------
-class TestPerson3Bronchitis(unittest.TestCase):
-
-    def test_smoking_and_dyspnea_favors_bronchitis(self):
-        d = Diagnostics()
-        disease, probability = d.diagnose("No", "Yes", "Normal", "Present")
-        self.assertEqual(disease, "Bronchitis")
+    @patch.dict(os.environ, {"NRP_API_KEY": "test-key"})
+    @patch("diagnostics.urlopen", side_effect=HTTPError("url", 401, "Unauthorized", {}, None))
+    def test_auth_error(self, urlopen):
+        with self.assertRaisesRegex(RuntimeError, "Check your NRP API key"):
+            Diagnostics().diagnose("NA", "NA", "NA", "NA")
 
 
 if __name__ == "__main__":
