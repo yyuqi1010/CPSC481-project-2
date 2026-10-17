@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from diagnostics import Diagnostics
+from queue import Queue, Empty
+from threading import Thread
 
 # Create the main application window
 root = tk.Tk()
@@ -10,16 +12,42 @@ root.title("Medical Diagnostics")
 root.geometry("400x300")
 bn = Diagnostics()
 
-# Function to handle dropdown selection
-def on_selection():
+# Workers use only Python data. All Tk operations run on the main thread.
+results = Queue()
+
+
+def run_diagnosis(inputs):
     try:
-        disease, p_disease = bn.diagnose(asia_var.get(), smoking_var.get(), xray_var.get(), dyspnea_var.get())
-    except (RuntimeError, ValueError) as error:
-        messagebox.showerror("Diagnosis failed", str(error))
+        results.put((bn.diagnose(*inputs), None))
+    except Exception as error:
+        # Always restore the GUI, even after an unexpected worker failure.
+        results.put((None, str(error)))
+
+
+def check_result():
+    try:
+        answer, error = results.get_nowait()
+    except Empty:
+        root.after(100, check_result)
         return
-    diagnosis = f"{disease} with chance {p_disease*100:.2f}%"
+    diagnose_button.config(state="normal")
     textbox.delete("1.0", tk.END)
-    textbox.insert(tk.END, diagnosis)
+    if error:
+        textbox.insert(tk.END, "Request failed. Please retry.")
+        messagebox.showerror("Diagnosis failed", error)
+    else:
+        disease, probability = answer
+        textbox.insert(tk.END, f"{disease} with chance {probability * 100:.2f}%")
+
+
+def on_selection():
+    inputs = (asia_var.get(), smoking_var.get(), xray_var.get(), dyspnea_var.get())
+    diagnose_button.config(state="disabled")
+    textbox.delete("1.0", tk.END)
+    textbox.insert(tk.END, "Calculating... Please wait.")
+    Thread(target=run_diagnosis, args=(inputs,), daemon=True).start()
+    root.after(100, check_result)
+
 
 # Variables to store dropdown selections
 asia_var = tk.StringVar(value="NA")
